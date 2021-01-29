@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="fontawesome-free-5.15.1-web/css/all.css">
+
+    <title>Car Game</title>
+
+    <style>
+        *{padding: 0px;margin: 0;}
+        .hide{display: none;}
+
+        /* .car
+        {
+            width:50px;
+            height: 70px;
+            background-color: red;
+            position: absolute;
+            
+            left: 40%;
+            bottom: 120px;
+        } */
+        .gameArea
+        {
+            width:400px;
+            height: 100vh;
+            background-color: black;
+            margin: auto;
+            position: relative;
+            overflow: hidden; 
+            border-left: 8px dashed white;
+            border-right: 8px dashed white;
+           
+        }
+        /*.carGame
+        {
+            width: 100%;
+            height: 100vh;
+            background-image: url("bg1.jpg");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+
+        }*/
+        .sound
+        {
+            position: absolute;
+            right: 50px;
+            top: 30px;
+           
+        }
+        
+    </style>
+</head>
+<body >
+    <div class="carGame">
+           <div class="sound">
+               <i class="fas fa-volume-up" style="font-size: 50px;" id="Sound"></i>   
+             <audio id="aduio">
+                <source src="sound1.mp3" type="audio/mpeg">
+            </audio>
+        
+          </div>
+            <div class="score"> </div>
+            <div class="Stars"></div>
+            <div class="HighScore"></div>
+            <div class="startScreen">
+                <p id="para">
+                    Press here to start<br>
+                    Arrows key to move<br>
+                    if you hit another car you lose<br>
+                    press Esc To pause
+                </p>
+                <button id="buttonStart">start</button>
+                <button id="buttonExit">Exit</button>
+            </div>
+            
+            <div class="ResumeScreen hide">
+                <p id="ResumePara">
+                    Press Resume to Complete<br>
+                    Press Cancel To Exit<br>
+                    Press Restart To begin Again
+                </p>
+                <button id="ResumeBtn">Resume</button>
+                <button id="RestartBtn">Restart</button>
+                <button id="CancelBtn">Cancel</button>
+            </div>
+
+    </div>
+    <div class="gameArea"></div>
+   
+
+<script>
+   // document.querySelector(".carGame").setAttribute("style","background-image: url('bg1.jpg')");
+   ////score div 
+    var score=document.querySelector(".score");
+    score.setAttribute("class","hide");
+    score.setAttribute("style",
+    "color:white;font-family:fantasy;box-shadow:0 5px 5px green;width:300px;height:100px;background-color:orange;margin-top:100px;margin-left:50px;position:absolute;font-size:2em;text-align:center;padding-top:50px");
+    //// stars div
+    var star=document.querySelector(".Stars");
+    star.setAttribute("class","hide");
+    star.setAttribute("style",
+    "color:white;font-family:fantasy;box-shadow:0 5px 5px green;width:300px;height:100px;background-color:orange;margin-top:300px;margin-left:50px;position:absolute;font-size:2em;text-align:center;padding-top:50px");
+    //////// High Score div
+    var HighScore=document.querySelector(".HighScore");
+    HighScore.setAttribute("class","hide");
+    HighScore.setAttribute("style",
+    "color:white;font-family:fantasy;box-shadow:0 5px 5px green;width:300px;height:100px;background-color:orange;margin-top:100px;margin-left:1100px;position:absolute;font-size:2em;text-align:center;padding-top:50px");
+
+ ////////////////////////////////// Start of StartScreen
+    var startScreen=document.querySelector(".startScreen");
+    startScreen.setAttribute("style",
+    "z-index:1;color:white;font-family:fantasy;box-shadow:0 5px 5px green;width:600px;height:200px;background-color:orange;margin-top:200px;margin-left:450px;position:absolute;font-size:2em;text-align:center;padding-top:50px");
+     
+    var buttonStart=document.getElementById("buttonStart");
+    buttonStart.setAttribute("style","width:100px;height:100;background-color:blue;color:white;")
+    var buttonExit=document.getElementById("buttonExit");
+    buttonExit.setAttribute("style","width:100px;height:100;background-color:blue;color:white;")
+
+
+
+    var gameArea=document.querySelector(".gameArea");
+   // console.log(score);  
+     buttonStart.addEventListener("click",restartt);
+     buttonExit.addEventListener("click",function(){window.close();});
+////////////////////////////////// End Of StartScreen
+
+//////////////////////////////
+
+var ResumeScreen=document.querySelector(".ResumeScreen");
+   ResumeScreen.setAttribute("style",
+    "z-index:1;color:white;font-family:fantasy;box-shadow:0 5px 5px green;width:650px;height:250px;background-color:orange;margin-top:200px;margin-left:450px;position:absolute;font-size:2em;text-align:center;padding-top:50px");
+     
+    var ResumeBtn=document.getElementById("ResumeBtn");
+    ResumeBtn.setAttribute("style","width:100px;height:100;background-color:blue;color:white;")
+
+    var RestartBtn=document.getElementById("RestartBtn");
+    RestartBtn.setAttribute("style","width:100px;height:100;background-color:blue;color:white;")
+
+    var CancelBtn=document.getElementById("CancelBtn");
+    CancelBtn.setAttribute("style","width:100px;height:100;background-color:blue;color:white;")
+
+
+    ResumeBtn.addEventListener("click",start);
+    RestartBtn.addEventListener("click",restartt);
+    CancelBtn.addEventListener("click",function(){window.close();});
+
+    //var gameArea=document.querySelector(".gameArea");
+    
+/////////////////////////////////Sound
+  var soundflag=1;
+  var sound=document.getElementById("Sound");
+        sound.addEventListener("click",function()
+        {
+            if(soundflag==1)
+            {
+                this.setAttribute("class","fas fa-volume-mute");
+                document.getElementById("aduio").pause();
+                soundflag=0;
+            }
+            else
+            {
+                this.setAttribute("class","fas fa-volume-up");
+                soundflag=1;
+                if(player.start==true)
+                {
+                    document.getElementById("aduio").play();
+                }
+                
+                 
+            }
+        })
+function playSound()
+    {
+        if(soundflag==1)
+        {
+            var sond=document.getElementById("aduio");
+            sond.play();
+        }
+       
+    }
+
+/////////////////////////
+
+       // var StoredData=JSON.parse(localStorage.getItem("playerData"));
+        var player={speed:5,Score:0,Stars:0};
+        var EnemyCarob1={};
+        var EnemyCarob2={};
+        var EnemyCarob3={};
+        var EnemyCarob4={};
+        var arrEnemyCar=[EnemyCarob1,EnemyCarob2,EnemyCarob3,EnemyCarob4];
+        var Starobj1={};var Starobj2={}; var Starobj3={}; var Starobj4={}; var Starobj5={}; var Starobj6={};
+        var Starobj7={}; var Starobj8={}; var Starobj9={};
+        var arrStarsObjects=[Starobj1,Starobj2,Starobj3,Starobj4,Starobj5,Starobj6,Starobj7,Starobj8,Starobj9];
+
+        var road=gameArea.getBoundingClientRect();
+
+
+        var keys={ArrowUp:false,ArrowRight:false,ArrowLeft:false,ArrowDown:false,Escape:false};
+        document.addEventListener("keydown",keyDown);
+        document.addEventListener("keyup",keyUp);
+
+        function keyDown(e)
+        {
+            e.preventDefault();
+             keys[e.key]=true;
+           //console.log(e.key);
+           // console.log(keys);
+        }
+        function keyUp(e)
+        {
+            e.preventDefault();
+            keys[e.key]=false;
+        }
+/////////////////////////end Game
+var playerdataToStore=JSON.stringify(player);
+localStorage.setItem("playerData",playerdataToStore);
+function endGame()
+   {
+    player.start=false;
+    startScreen.classList.remove("hide");
+    document.getElementById("para").innerHTML="Game Over<br> Your Final Score is : "+(player.Score+1) +"<br> You Gets : "+player.Stars+" Stars<br> Press start to Restart Game";
+    var StoredData=JSON.parse(localStorage.getItem("playerData"));
+    if(StoredData.Score<player.Score)
+        {
+            var playerdataToStore=JSON.stringify(player);
+            localStorage.setItem("playerData",playerdataToStore);
+        }
+        
+        document.getElementById("aduio").pause();
+    
+    //startScreen.innerHTML="Game Over<br> Your Final Score is : "+(player.Score+1) + " <br> Press here to restart Game";
+
+   }
+////////////////////Pause Game
+var flag=0; var flag1=0;var flagStar=0;var crashflag=0;
+function PauseGame()
+   {
+    player.start=false;
+    ResumeScreen.classList.remove("hide");
+    flag=1;
+    flag1=1;
+    flagStar=1;
+    crashflag=1;
+    document.getElementById("aduio").pause();
+
+   }
+  function restartt()
+   {
+       player.Stars=0;
+       player.Score=0;
+       flag1=0;
+       flag=0;
+       flagStar=0;
+       crashflag=0;
+       start();
+   }
+////////////////////// crash
+function isCrashed(myCar,enmyCar)
+        {
+            myCarRect=myCar.getBoundingClientRect();
+           enmyCarRect=enmyCar.getBoundingClientRect();
+           console.log("mtop"+myCarRect.top+"mleft"+myCarRect.left+"mright"+myCarRect.right+"mbottom"+myCarRect.bottom);
+           console.log("etop"+enmyCarRect.top+"eleft"+enmyCarRect.left+"eright"+enmyCarRect.right+"ebottom"+enmyCarRect.bottom);
+           return !((myCarRect.top>enmyCarRect.bottom)||(myCarRect.bottom<enmyCarRect.top)
+           ||(myCarRect.right<enmyCarRect.left)||(myCarRect.left>enmyCarRect.right))
+            
+        }
+/////////////move lines
+        function moveLines()
+        {
+            var lines=document.querySelectorAll(".line");
+            lines.forEach(function(item)
+            {
+                if(item.y>700)
+                {
+                    item.y -=750;
+                }
+                if(player.Score<1000)
+                {
+                    item.y +=player.speed;
+                  item.style.top=item.y+"px";
+                }
+                else if(player.Score<2000)
+                {
+                  item.y +=(player.speed*1.5);
+                  item.style.top=item.y+"px";
+                }
+                else 
+                {
+                  item.y +=(player.speed*2.5);
+                  item.style.top=item.y+"px";
+                }
+               
+
+            });
+        }
+
+
+//////////////////move enemy
+function moveEnemy(car)
+     {
+            var enemy=document.querySelectorAll(".enemeycar");
+            var count=0;
+            enemy.forEach(function(item)
+            {
+                if(flag1==1)
+                {
+                    item.y=arrEnemyCar[count].y;
+                }
+               
+
+                if(isCrashed(car,item))
+                {
+                    console.log("Crashed");
+                    if(crashflag==0)
+                    {
+                        endGame();
+                    }
+                   
+                }
+               if(item.y>750)
+                    {
+                        item.y =-200;
+                        var CarLeft=Math.floor(Math.random()*400);
+                                if(CarLeft>342)
+                                {
+                                    item.style.left=342+"px";
+                                    //item.setAttribute("style","margin-left:330px");
+                                }
+                                else if(CarLeft<58)
+                                {
+                                    console.log(CarLeft);
+                                    item.style.left=58+"px";
+                                }
+                                else
+                                {
+                                    item.style.left=CarLeft+"px"; 
+                                }
+
+                        //item.style.left=Math.floor(Math.random()*400)+"px";
+
+                    }
+                   // console.log("test"+item.y);
+                   // console.log("speed"+player.speed);
+                    if(player.Score<1000)
+                    {
+                    
+                        item.y +=player.speed;
+                        item.style.top=item.y+"px";
+                    }
+                    else if(player.Score<2000)
+                    {
+                    item.y +=(player.speed*1.5);
+                    item.style.top=item.y+"px";
+                    }
+                    else 
+                    {
+                    item.y +=(player.speed*2.5);
+                    item.style.top=item.y+"px";
+                    }
+
+                    arrEnemyCar[count].x=item.offsetLeft;
+                    arrEnemyCar[count].y=item.offsetTop;
+                    count++;
+                
+
+            });
+       
+    }
+///////////////////////////move coins
+var c1=0,c2=0;
+var coinLeft;
+function moveCoins(car)
+        {
+            var coins=document.querySelectorAll(".coin");
+             //var starCount=0;
+            coins.forEach(function(item)
+            {
+                if(isCrashed(car,item))
+                {
+                    
+                    player.Stars++;
+                     item.classList.add("hide");
+                    console.log("star");
+                }
+                    // if(flagStar==1)
+                    // {
+                    //     item.y=arrStarsObjects[starCount].y;
+                    // }
+                if(item.y>700)
+                {
+                     item.classList.remove("hide");
+                     item.y -=750;
+                            if(c1==3){c2=0;}
+                            if(c2==0)
+                            {
+                                 coinLeft=Math.floor(Math.random()*400);
+                                c1=0;
+                            }     
+                            
+                                if(coinLeft>342)
+                                {
+                                    item.style.marginLeft=342+"px";
+                                    //item.setAttribute("style","margin-left:330px");
+                                }
+                                else if(coinLeft<58)
+                                {
+                                    console.log(coinLeft);
+                                    item.style.marginLeft=58+"px";
+                                }
+                                else
+                                {
+                                    item.style.marginLeft=coinLeft+"px"; 
+                                }
+                                c2++;
+                                c1++;
+                }
+              
+                //item.y +=player.speed;
+                // item.style.top=item.y+"px";
+                if(player.Score<1000)
+                {
+                    item.y +=player.speed;
+                    item.style.top=item.y+"px";
+                }
+                else if(player.Score<2000)
+                {
+                  item.y +=(player.speed*1.5);
+                  item.style.top=item.y+"px";
+                }
+                else 
+                {
+                  item.y +=(player.speed*2.5);
+                  item.style.top=item.y+"px";
+                }
+                    // arrStarsObjects[starCount].x=item.offsetLeft;
+                    // arrStarsObjects[starCount].y=item.offsetTop;
+                    // starCount++;
+               
+            });
+
+        }
+
+
+///// start game
+        function playGame()
+        {
+            //console.log("Game started");
+            var car=document.querySelector(".car");
+            if(player.start)
+            {
+                // console.log("asd");
+               // console.log(keys.ArrowUp);
+               // console.log(road.bottom);
+                moveLines();
+                moveEnemy(car);
+                moveCoins(car);
+                if(keys.ArrowUp &&  player.y>(road.top+70)){player.y -= player.speed;}
+                if(keys.ArrowDown && player.y<600){player.y +=  player.speed;}
+                if(keys.ArrowLeft && player.x>8){player.x -=  player.speed;}
+                if(keys.ArrowRight && player.x<342){player.x += player.speed;}
+                if(keys.Escape){PauseGame();}
+                car.style.top=player.y +"px";
+               // console.log("asd");
+                car.style.left=player.x +"px";
+
+               window.requestAnimationFrame(playGame);
+               player.Score++;
+               score.textContent=" Score : "+player.Score;
+               star.textContent=" Stars : "+player.Stars;
+               var StoredDataa=JSON.parse(localStorage.getItem("playerData"));
+               HighScore.textContent="High Score : "+(++StoredDataa.Score);
+
+            }
+           
+        }
+        function start()
+        {
+            //gameArea.classList.remove("hide");
+
+            ResumeScreen.classList.add("hide");
+            score.classList.remove("hide");
+            startScreen.classList.add("hide");
+            star.classList.remove("hide");
+            HighScore.classList.remove("hide");
+            gameArea.innerHTML="";
+            if(flag1==0)
+            {
+               setTimeout(playSound,700);
+
+            }else
+            {
+                if(soundflag==1)
+                {
+                    document.getElementById("aduio").play();
+                }
+               
+            }
+            
+            for(var x=0;x<5;x++)
+            {
+                var roadLine=document.createElement("div");
+                roadLine.setAttribute("class","line");
+                roadLine.setAttribute("style","width:10px;height:100px;background-color: white;position:absolute;margin-left:48%");
+                 roadLine.y=(x*150);
+                //roadLine.style.top=(x*150)+"px";
+                gameArea.appendChild(roadLine);
+
+            }
+
+           player.start=true;
+           window.requestAnimationFrame(playGame);
+           var car=document.createElement("div");
+           //var text=document.createTextNode("i anew car");
+            //car.appendChild(text);
+            car.setAttribute("class","car");
+            car.setAttribute("style","width:50px;height:80px;background-color:green;position: absolute; left: 40%;bottom: 120px; background-image: url('car2.jpg');background-repeat: no-repeat;background-size: 50px 80px;");
+            gameArea.appendChild(car);
+                    if(flag==0)
+                    {
+                        player.x=car.offsetLeft; 
+                        player.y=car.offsetTop;
+                    }
+                    else
+                    {
+                      flag=0;
+                    }
+                    crashflag=0;
+
+            console.log("left position is: "+car.offsetLeft);
+            console.log("top position is: "+car.offsetTop);
+
+////////////////////enmey car
+           for(var x=0;x<4;x++)
+                    {
+                        var enmeyCar=document.createElement("div");
+                        enmeyCar.setAttribute("class","enemeycar");
+                        enmeyCar.setAttribute("style","width:50px;height: 80px;position:absolute;background-image: url('e1.jpg');background-repeat: no-repeat;background-size: 50px 80px;");
+                       
+                        if(flag1==0)
+                        {
+
+                              enmeyCar.y=((1+x)*350)*-1;
+                            // enmeyCar.style.top=(x*150)+"px";
+                                var CarLeft=Math.floor(Math.random()*400);
+
+                                if(CarLeft>342)
+                                {
+                                    enmeyCar.style.left=342+"px";
+                                    //enmeyCar.setAttribute("style","margin-left:330px");
+                                }
+                                else if(CarLeft<58)
+                                {
+                                    console.log(CarLeft);
+                                    enmeyCar.style.left=0+"px";
+                                }
+                                else
+                                {
+                                    enmeyCar.style.left=CarLeft+"px"; 
+                                }
+                                arrEnemyCar[x].x=enmeyCar.offsetLeft;
+                                arrEnemyCar[x].y=enmeyCar.offsetTop;
+                       
+                       }
+                        else
+                        {
+                            enmeyCar.style.left=arrEnemyCar[x].x+"px";
+                            enmeyCar.style.top=arrEnemyCar[x].y+"px";
+                        }
+
+                        gameArea.appendChild(enmeyCar);
+
+                    }
+          
+
+////////////////////////coins
+    for(var x=0;x<9;x++)
+                {
+                    
+                    if(x==0 || x==3 ||x==6)
+                    {
+                        var leftlength=Math.floor(Math.random()*400);
+                        if(leftlength<58){leftlength=58}
+                        else if(leftlength>342){leftlength=342}
+                    }
+                    if(x<3)
+                    {
+                            var coins=document.createElement("div");
+                            coins.setAttribute("class","coin");
+                            coins.setAttribute("style","width:15px;height:15px;background-color:yellow;position: absolute; border-radius: 100%;");
+                                    // if(flagStar==0)
+                                    // {
+                                        coins.y=((1+x)*40)*-1;
+                                        coins.style.marginLeft=leftlength+"px";
+                                        arrStarsObjects[x].x=coins.offsetLeft;
+                                        arrStarsObjects[x].y=coins.offsetTop;
+                                   // }
+                                    // else
+                                    // {
+                                    //   coins.style.left=arrStarsObjects[x].x+"px";
+                                    //   coins.style.top=arrStarsObjects[x].y+"px"; 
+                                    // }
+                            
+                           // gameArea.appendChild(coins);
+                          
+                    }
+                    else if(x<6)
+                    {
+                        var coins=document.createElement("div");
+                            coins.setAttribute("class","coin");
+                            coins.setAttribute("style","width:15px;height:15px;background-color:yellow;position: absolute; border-radius: 100%;");
+                           
+                            // if(flagStar==0)
+                            //         {
+                                        coins.y=((1+x)*40)*-1;
+                                        coins.style.marginLeft=leftlength+"px";
+                                        arrStarsObjects[x].x=coins.offsetLeft;
+                                        arrStarsObjects[x].y=coins.offsetTop;
+                                    // }
+                                    // else
+                                    // {
+                                    //   coins.style.left=arrStarsObjects[x].x+"px";
+                                    //   coins.style.top=arrStarsObjects[x].y+"px"; 
+                                    // }
+                           // gameArea.appendChild(coins);
+                            
+                    }
+                    else
+                    {
+                        var coins=document.createElement("div");
+                            coins.setAttribute("class","coin");
+                            coins.setAttribute("style","width:15px;height:15px;background-color:yellow;position: absolute; border-radius: 100%;");
+                            
+                            
+                            // if(flagStar==0)
+                            //         {
+                                        coins.y=((1+x)*40)*-1;
+                                        coins.style.marginLeft=leftlength+"px";
+                                        arrStarsObjects[x].x=coins.offsetLeft;
+                                       arrStarsObjects[x].y=coins.offsetTop;
+                                    // }
+                                    // else
+                                    // {
+                                    //   coins.style.left=arrStarsObjects[x].x+"px";
+                                    //   coins.style.top=arrStarsObjects[x].y+"px"; 
+                                    // }
+                           // gameArea.appendChild(coins); 
+                    }
+                     
+                      gameArea.appendChild(coins);
+                }
+
+                
+
+
+
+        }
+
+
+</script>
+</body>
+</html>

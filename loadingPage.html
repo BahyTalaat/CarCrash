@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Crash</title>
+</head>
+<style>
+    body
+    {
+        background-color: burlywood;
+        background-image: url("bg1.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+
+    }
+    div
+    {
+        display: flex;
+        height: 200px;
+        width: 100%;
+        flex-direction: column;
+        position: relative;
+        margin-top: 15%;
+        align-items: center;
+        justify-content: center;
+       
+    }
+    progress
+    {
+        
+        width: 400px;
+        height: 70px;
+        
+    }
+    span
+    {
+        font-size: 30px;
+       color: white;
+    }
+   
+</style>
+<body>
+    <div>
+        <span >Loading.....</span>
+        <progress max="1" value=".1" id="progress"></progress>
+        <h1 style="color:white;">Bahy Talaat</h1>
+    </div>
+    <script>
+        var interval=setInterval(increase,500);
+        var c=0.1;
+       
+        function increase()
+        {
+           c+=0.1;
+          document.getElementById("progress").setAttribute("value",c); 
+        }
+        var interval2=setTimeout(redirect,5000);
+        function redirect()
+        {
+            open("Cargame.html");
+            clearInterval(interval);
+        }
+        
+        // var btn=document.getElementById("btn");
+        // btn.addEventListener("click",function(){
+        //     clearInterval(interval);
+        // })
+        
+       
+    <!-- </script>
+
+
+    
+</body>
+</html>
